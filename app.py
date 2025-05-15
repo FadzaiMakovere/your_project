@@ -73,9 +73,9 @@ def not_found(error):
 
 # Run the Flask application
 if __name__ == "__main__":
+    # Use this for development
     app.run(debug=True)
     
-    if __name__ == "__main__":
-    from waitress import serve  # Use Waitress instead of Flask's default server for production
-    serve(app, host="0.0.0.0", port=8080)
-
+    # For production, comment out the above line and uncomment the following:
+    # from waitress import serve
+    # serve(app, host="0.0.0.0", port=8080)
