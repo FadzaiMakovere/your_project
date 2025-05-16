@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Health Risk Prediction Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      background-color: #f2f6fa;
+      color: #333;
+    }
+    h1 {
+      color: #004080;
+    }
+    form {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      max-width: 500px;
+      margin: auto;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #004080;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #003366;
+    }
+    .result {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Health Risk Prediction</h1>
+
+  <form id="predictionForm">
+    <label for="male">Male:</label>
+    <select id="male" name="male" required>
+      <option value="">--Select--</option>
+      <option value="1">Yes</option>
+      <option value="0">No</option>
+    </select>
+
+    <label for="age">Age:</label>
+    <input type="number" id="age" name="age" required>
+
+    <label for="totchol">Total Cholesterol:</label>
+    <input type="number" id="totchol" name="totchol" required>
+
+    <label for="diabetes">Diabetes:</label>
+    <select id="diabetes" name="diabetes" required>
+      <option value="">--Select--</option>
+      <option value="1">Yes</option>
+      <option value="0">No</option>
+    </select>
+
+    <label for="bmi">BMI:</label>
+    <input type="number" step="0.1" id="bmi" name="bmi" required>
+
+    <label for="bp">Blood Pressure:</label>
+    <input type="number" id="bp" name="bp" required>
+
+    <label for="smoker">Smoker:</label>
+    <select id="smoker" name="smoker" required>
+      <option value="">--Select--</option>
+      <option value="1">Yes</option>
+      <option value="0">No</option>
+    </select>
+
+    <button type="submit">Predict</button>
+  </form>
+
+  <div class="result" id="result"></div>
+
+  <script>
+    document.getElementById("predictionForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const formData = {
+        feature1: parseInt(document.getElementById("male").value),
+        feature2: parseInt(document.getElementById("age").value),
+        feature3: parseInt(document.getElementById("totchol").value),
+        feature4: parseInt(document.getElementById("diabetes").value),
+        feature5: parseFloat(document.getElementById("bmi").value),
+        feature6: parseInt(document.getElementById("bp").value),
+        feature7: parseInt(document.getElementById("smoker").value)
+      };
+
+      try {
+        const response = await fetch("/predict", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(formData)
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+          document.getElementById("result").innerText = "Prediction Result: " + result.prediction[0];
+        } else {
+          document.getElementById("result").innerText = "Error: " + result.error;
+        }
+      } catch (error) {
+        document.getElementById("result").innerText = "Request failed.";
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Form Entry Instructions</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+      background-color: #f9fbfe;
+      color: #333;
+    }
+    h1 {
+      color: #004080;
+    }
+    .section {
+      background-color: #fff;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    .field-title {
+      font-weight: bold;
+      color: #003366;
+    }
+    ul {
+      margin-top: 0;
+    }
+    code {
+      background-color: #eef3f8;
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    .button-container {
+      text-align: center;
+      margin-top: 30px;
+    }
+    .form-button {
+      padding: 12px 24px;
+      font-size: 16px;
+      background-color: #004080;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .form-button:hover {
+      background-color: #003366;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Instructions for Filling Out the Form</h1>
+
+  <div class="section">
+    <h2>General Instructions</h2>
+    <ul>
+      <li>Ensure all information is accurate before submitting.</li>
+      <li>Use numbers only where numerical input is required.</li>
+      <li>Do not include units (e.g., type <code>120</code>, not <code>120 mmHg</code>).</li>
+      <li>Leave fields blank only if marked as optional.</li>
+      
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>Before You Submit</h2>
+    <ul>
+      <li>Review all entered values carefully.</li>
+      <li>Confirm all required fields are filled in.</li>
+      <li>Click the “Submit” button once you're ready.</li>
+      <li>Wait for the confirmation message to ensure successful submission.</li>
+    </ul>
+  </div>
+
+  <div class="button-container">
+    <a href="{{ url_for('form') }}">
+      <button class="form-button">Go to Form</button>
+    </a>
+  </div>
+
+</body>
+</html>

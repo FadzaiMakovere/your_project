@@ -1,31 +1,67 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template, redirect, url_for
 import sqlite3
 import joblib
 
 app = Flask(__name__)
 
 # Load the trained machine learning model
-model = joblib.load("chd_model.pkl")  
+model = joblib.load("chd_model.pkl")
 
 # Home route
 @app.route("/")
 def home():
-    return jsonify({"message": "Welcome to the Coronary Heart Disease Predictor API!"})
+    return render_template("home.html")  # Serve the home page
 
-# Route to make predictions with the model
+# Login route
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        conn = sqlite3.connect("patient data.db")
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM users WHERE name=? AND email=?", (username, password))
+        user = cursor.fetchone()
+        conn.close()
+
+        if user:
+            return redirect(url_for("home"))
+        else:
+            return "Invalid username or password", 401
+
+    return render_template("login.html")
+
+# Instructions page
+@app.route("/instructions")
+def instructions():
+    return render_template("instructions.html")
+
+# Form page
+@app.route("/form")
+def form():
+    return render_template("form.html")
+
+# Prediction route (updated to accept 7 inputs)
 @app.route("/predict", methods=["POST"])
 def predict():
     try:
-        data = request.json  # Receive JSON input
-        input_data = [[data["feature1"], data["feature2"], data["feature3"], data["feature4"]]]
-
+        data = request.get_json()
+        input_data = [[
+            data["feature1"],  # Male
+            data["feature2"],  # Age
+            data["feature3"],  # totchol
+            data["feature4"],  # diabetes
+            data["feature5"],  # BMI
+            data["feature6"],  # BP
+            data["feature7"]   # smoker
+        ]]
         prediction = model.predict(input_data)
-
         return jsonify({"prediction": prediction.tolist()})
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-# Route to fetch users from the SQLite database
+# Fetch users
 @app.route("/users", methods=["GET"])
 def fetch_users():
     try:
@@ -39,7 +75,7 @@ def fetch_users():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# Route to add a new user to the database
+# Add user
 @app.route("/add_user", methods=["POST"])
 def add_user():
     try:
@@ -53,7 +89,7 @@ def add_user():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# Route to get list of stored models in the database
+# List available models
 @app.route("/models", methods=["GET"])
 def get_models():
     try:
@@ -66,16 +102,11 @@ def get_models():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# Error handling for 404 (not found)
+# 404 handler
 @app.errorhandler(404)
 def not_found(error):
     return jsonify({"error": "Resource not found!"}), 404
 
-# Run the Flask application
+# Run app
 if __name__ == "__main__":
-    # Use this for development
     app.run(debug=True)
-    
-    # For production, comment out the above line and uncomment the following:
-    # from waitress import serve
-    # serve(app, host="0.0.0.0", port=8080)

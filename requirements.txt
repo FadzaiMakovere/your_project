@@ -1,7 +1,5 @@
 flask
+gunicorn
 flask-sqlalchemy
-sqlite3
-gunicorn  
 joblib
 scikit-learn
-
